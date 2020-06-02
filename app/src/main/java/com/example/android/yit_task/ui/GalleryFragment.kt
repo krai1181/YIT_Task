@@ -27,6 +27,7 @@ class GalleryFragment : Fragment() {
     private lateinit var preferences: SharedPreferences
     private val sharedPrefFile = "com.example.android.yit_task.ui"
     private val appPrefSearch = "search"
+    private val appPrefPage = "page"
     private val baseQ = "kitten"
 
     private var lastSearch: String = baseQ
@@ -91,6 +92,7 @@ class GalleryFragment : Fragment() {
         super.onPause()
         val editor = preferences.edit()
         editor.putString(appPrefSearch, lastSearch)
+        editor.putInt(appPrefPage,currentPage)
         editor.apply()
     }
 
@@ -98,6 +100,7 @@ class GalleryFragment : Fragment() {
         super.onResume()
         if (preferences.contains(appPrefSearch)) {
             lastSearch = preferences.getString(appPrefSearch, baseQ).toString()
+            currentPage = preferences.getInt(appPrefPage,1)
             viewModel.updateSearch(lastSearch, currentPage)
         }
     }
