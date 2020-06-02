@@ -1,0 +1,2 @@
+rootProject.name='YIT_Task'
+include ':app'

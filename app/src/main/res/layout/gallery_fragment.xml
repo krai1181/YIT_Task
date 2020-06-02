@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.android.yit_task.ui.GalleryViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        tools:context=".ui.GalleryFragment">
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/search_images"
+            android:layout_marginBottom="@dimen/half_margin"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorPrimaryDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/half_margin"
+            android:layout_marginStart="@dimen/double_margin"
+            android:layout_marginEnd="@dimen/double_margin"
+            android:hint="@string/search"
+            android:paddingTop="@dimen/mini_padding"
+            android:paddingBottom="@dimen/mini_padding"
+            android:paddingStart="@dimen/standart_padding"
+            android:paddingEnd="@dimen/standart_padding"
+            android:background="@color/colorWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_search" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_images"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="@dimen/half_margin"
+            android:layout_marginTop="@dimen/half_margin"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_tv"
+            app:spanCount="4"
+            listData="@{viewModel.properties.hits}"
+            tools:listitem="@layout/image_item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

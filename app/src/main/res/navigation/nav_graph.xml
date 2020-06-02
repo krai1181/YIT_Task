@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/galleryFragment2">
+    <fragment
+        android:id="@+id/galleryFragment2"
+        android:name="com.example.android.yit_task.ui.GalleryFragment"
+        android:label="GalleryFragment"
+        tools:layout="@layout/gallery_fragment">
+        <action
+            android:id="@+id/action_galleryFragment2_to_detailFragment2"
+            app:destination="@id/detailFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment2"
+        android:name="com.example.android.yit_task.ui.detail.DetailFragment"
+        android:label="DetailFragment"
+        tools:layout="@layout/detail_fragment">
+        <argument
+            android:name="selectedProperty"
+            app:argType="com.example.android.yit_task.network.Hit" />
+    </fragment>
+</navigation>
