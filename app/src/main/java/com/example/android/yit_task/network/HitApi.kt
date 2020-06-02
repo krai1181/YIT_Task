@@ -24,7 +24,7 @@ val retrofit = Retrofit.Builder()
 
 interface HitApiService{
     @GET("?key=${ KEY }&per_page=200")
-    fun getPropertiesAsync(@Query("q")type: String):Deferred<HitsData>
+    fun getPropertiesAsync(@Query("q")type: String, @Query("page") page: Int):Deferred<HitsData>
 }
 
 object HitApi{

@@ -14,8 +14,8 @@ class ImageRepository {
         get() = _properties
 
 
-    suspend fun getHitsProperties(q:String) {
-        val getPropertiesDeferred = HitApi.retrofitService.getPropertiesAsync(q)
+    suspend fun getHitsProperties(q:String, currentPage:Int ) {
+        val getPropertiesDeferred = HitApi.retrofitService.getPropertiesAsync(q, currentPage)
         val hitsData = getPropertiesDeferred.await()
         try {
             _properties.value = hitsData

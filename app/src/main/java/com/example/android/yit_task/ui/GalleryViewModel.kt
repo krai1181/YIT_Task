@@ -31,9 +31,9 @@ class GalleryViewModel : ViewModel() {
         _navigateToSelectedProperty.value = null
     }
 
-    fun updateSearch(query: String){
+    fun updateSearch(query: String, page: Int){
         viewModelScope.launch {
-            repository.getHitsProperties(query)
+            repository.getHitsProperties(query, page)
         }
     }
 

@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class HitsData(
     val total:Int,
-    val totalHits: String,
+    val totalHits: Int,
     @field:Json(name = "hits")
     val hits: List<Hit>
 ):Parcelable

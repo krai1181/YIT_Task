@@ -12,6 +12,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android.yit_task.databinding.GalleryFragmentBinding
 import java.util.*
 
@@ -28,7 +29,8 @@ class GalleryFragment : Fragment() {
     private val appPrefSearch = "search"
     private val baseQ = "kitten"
 
-    private var lastSearch:String = baseQ
+    private var lastSearch: String = baseQ
+    private var currentPage = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,12 +66,23 @@ class GalleryFragment : Fragment() {
 
         binding.btnSearch.setOnClickListener {
             val q = binding.editTv.text.toString().toLowerCase(Locale.getDefault())
-            viewModel.updateSearch(q)
+            currentPage = 1
+            viewModel.updateSearch(q, currentPage)
             lastSearch = q
         }
 
+        binding.rvImages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
 
-
+                if (recyclerView.canScrollVertically(1).not()) {
+                    if (currentPage in 1..2) {
+                        currentPage++
+                        viewModel.updateSearch(lastSearch, currentPage)
+                    }
+                }
+            }
+        })
 
         return binding.root
     }
@@ -85,8 +98,7 @@ class GalleryFragment : Fragment() {
         super.onResume()
         if (preferences.contains(appPrefSearch)) {
             lastSearch = preferences.getString(appPrefSearch, baseQ).toString()
-            viewModel.updateSearch(lastSearch)
-
+            viewModel.updateSearch(lastSearch, currentPage)
         }
     }
 
