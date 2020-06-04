@@ -3,19 +3,33 @@ package com.example.android.yit_task.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.yit_task.databinding.ImageItemBinding
-import com.example.android.yit_task.network.Hit
+import com.example.android.yit_task.model.Item
 
-class ImagesAdapter(private  val clickListener: OnClickListener) : ListAdapter<Hit, ImagesAdapter.HitsPropertyViewHolder>(DiffCallback) {
+class ImagesAdapter(private  val clickListener: OnClickListener) : ListAdapter<Item, ImagesAdapter.HitsPropertyViewHolder>(DiffCallback) {
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Hit>() {
-        override fun areItemsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+
+    val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
+        object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return getItem(position).columns
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return getItem(position).columns
+    }
+
+    companion object DiffCallback : DiffUtil.ItemCallback<Item>() {
+        override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+        override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
             return oldItem.imageId == newItem.imageId
         }
 
@@ -35,17 +49,18 @@ class ImagesAdapter(private  val clickListener: OnClickListener) : ListAdapter<H
 
     }
 
-    class OnClickListener(val clickListener:(hitProperty: Hit) -> Unit){
-        fun onClick(hitProperty: Hit) = clickListener(hitProperty)
+    class OnClickListener(val clickListener:(hitProperty: Item) -> Unit){
+        fun onClick(hitProperty: Item) = clickListener(hitProperty)
     }
 
 
     class HitsPropertyViewHolder(private var binding: ImageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(hitProperty: Hit) {
+        fun bind(hitProperty: Item) {
             binding.property = hitProperty
-            binding.image.layoutParams.height = hitProperty.previewHeight
-            binding.image.layoutParams.width = hitProperty.previewWidth
+
+         /*   binding.image.layoutParams.height = hitProperty.previewHeight
+            binding.image.layoutParams.width = hitProperty.previewWidth*/
             binding.executePendingBindings()
         }
 

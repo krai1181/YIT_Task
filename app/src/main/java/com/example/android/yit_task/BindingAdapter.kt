@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.android.yit_task.model.Item
 import com.example.android.yit_task.network.Hit
 import com.example.android.yit_task.ui.ImagesAdapter
 import com.example.android.yit_task.ui.detail.ImagePagerAdapter
@@ -27,7 +28,7 @@ fun bindImage(imageView: ImageView, url:String?)
 
 
 @BindingAdapter("listData")
-fun bindRecycler(recyclerView: RecyclerView, data: List<Hit>?){
+fun bindRecycler(recyclerView: RecyclerView, data: List<Item>?){
     val adapter = recyclerView.adapter as ImagesAdapter
     adapter.submitList(data)
 

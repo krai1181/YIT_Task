@@ -29,7 +29,7 @@ class DetailFragment : Fragment() {
         val viewModelFactory = DetailViewModelFactory(hit, application)
         val viewModel = ViewModelProvider(this, viewModelFactory)[DetailViewModel::class.java]
         binding.viewModel = viewModel
-        binding.viewPager.adapter = ImagePagerAdapter(hit)
+        binding.viewPager.adapter = ImagePagerAdapter()
 
 
         //get list<hits> from GalleryFragment

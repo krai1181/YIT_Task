@@ -12,6 +12,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.yit_task.databinding.GalleryFragmentBinding
 import java.util.*
@@ -47,8 +48,14 @@ class GalleryFragment : Fragment() {
 
 
         binding.rvImages.adapter = ImagesAdapter(ImagesAdapter.OnClickListener {
-            viewModel.displayPropertyDetail(it)
+            viewModel.displayPropertyDetail(it.hit)
         })
+
+        val layoutManager = GridLayoutManager(context, 10)
+        layoutManager.spanSizeLookup  = (binding.rvImages.adapter as ImagesAdapter).spanSizeLookup
+        binding.rvImages.layoutManager = layoutManager
+
+
 
         viewModel.properties.observe(viewLifecycleOwner, Observer {
             if (it!= null){
