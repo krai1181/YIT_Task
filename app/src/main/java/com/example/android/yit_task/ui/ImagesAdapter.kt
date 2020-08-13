@@ -58,9 +58,6 @@ class ImagesAdapter(private  val clickListener: OnClickListener) : ListAdapter<I
         RecyclerView.ViewHolder(binding.root) {
         fun bind(hitProperty: Item) {
             binding.property = hitProperty
-
-         /*   binding.image.layoutParams.height = hitProperty.previewHeight
-            binding.image.layoutParams.width = hitProperty.previewWidth*/
             binding.executePendingBindings()
         }
 

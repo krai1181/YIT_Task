@@ -1,28 +1,15 @@
 package com.example.android.yit_task.ui.detail
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.viewpager.widget.PagerAdapter
-import com.example.android.yit_task.databinding.SliderImageItemBinding
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.example.android.yit_task.network.Hit
 
-class ImagePagerAdapter() : PagerAdapter() {
+class ImagePagerAdapter : ListAdapter<Hit,DetailViewHolder>(DiffCallback) {
 
     private var images = emptyList<Hit>()
 
-    fun setImages(hits: List<Hit>) {
-        images = hits
-       notifyDataSetChanged()
-    }
-
-    override fun isViewFromObject(view: View, `object`: Any): Boolean =
-        view == `object`
-
-    override fun getCount(): Int = images.size
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+    /*     fun instantiateItem(container: ViewGroup, position: Int): Any {
         val binding = SliderImageItemBinding.inflate(LayoutInflater.from(container.context))
         val imageView = binding.root as ImageView
 
@@ -33,12 +20,27 @@ class ImagePagerAdapter() : PagerAdapter() {
         binding.hit = images[position]
         binding.executePendingBindings()
         return imageView
+    }*/
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
+        return DetailViewHolder.create(parent)
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(`object` as View)
+    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
+        val hitProperty = getItem(position)
+        holder.bind(hitProperty)
     }
 
+    companion object DiffCallback : DiffUtil.ItemCallback<Hit>() {
+        override fun areItemsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Hit, newItem: Hit): Boolean {
+            return oldItem.imageId == newItem.imageId
+        }
+
+    }
 
 
 }
