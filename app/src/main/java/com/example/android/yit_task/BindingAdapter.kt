@@ -3,7 +3,7 @@ package com.example.android.yit_task
 import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.android.yit_task.model.Hit
@@ -25,10 +25,10 @@ fun bindImage(imageView: ImageView, url:String?)
 
 
 @BindingAdapter("imageList", "selectedElement")
-fun bindViewPager(viewPager: ViewPager, data: List<Hit>?, hit: Hit){
+fun bindViewPager(viewPager: ViewPager2, data: List<Hit>?, hit: Hit){
     val adapter = viewPager.adapter as ImagePagerAdapter
     data?.let {
-        adapter.setImages(data)
+        adapter.submitList(data)
         viewPager.currentItem = data.indexOf(hit)
     }
 
