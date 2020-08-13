@@ -20,6 +20,6 @@
         tools:layout="@layout/detail_fragment">
         <argument
             android:name="selectedProperty"
-            app:argType="com.example.android.yit_task.network.Hit" />
+            app:argType="com.example.android.yit_task.model.Hit" />
     </fragment>
 </navigation>

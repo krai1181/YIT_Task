@@ -3,7 +3,7 @@ package com.example.android.yit_task.ui.detail
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.android.yit_task.network.Hit
+import com.example.android.yit_task.model.Hit
 import java.lang.IllegalArgumentException
 
 class DetailViewModelFactory(

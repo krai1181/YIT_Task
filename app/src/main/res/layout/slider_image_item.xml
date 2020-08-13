@@ -4,7 +4,7 @@
     <data>
         <variable
             name="hit"
-            type="com.example.android.yit_task.network.Hit" />
+            type="com.example.android.yit_task.model.Hit" />
 
     </data>
 

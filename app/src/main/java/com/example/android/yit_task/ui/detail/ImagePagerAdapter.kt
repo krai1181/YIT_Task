@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.example.android.yit_task.databinding.SliderImageItemBinding
-import com.example.android.yit_task.network.Hit
+import com.example.android.yit_task.model.Hit
 
-class ImagePagerAdapter() : PagerAdapter() {
+class ImagePagerAdapter : PagerAdapter() {
 
     private var images = emptyList<Hit>()
 

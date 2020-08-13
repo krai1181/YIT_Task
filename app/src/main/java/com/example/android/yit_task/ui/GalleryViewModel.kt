@@ -1,14 +1,20 @@
 package com.example.android.yit_task.ui
 
 
-import androidx.lifecycle.*
-import com.example.android.yit_task.model.Item
-import com.example.android.yit_task.network.Hit
-import com.example.android.yit_task.network.HitsData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.android.yit_task.model.Hit
+import com.example.android.yit_task.network.HitApiService
 import com.example.android.yit_task.repository.ImageRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-const val TAG = "YIT_TAG"
 
 class GalleryViewModel : ViewModel() {
 
@@ -17,11 +23,26 @@ class GalleryViewModel : ViewModel() {
     val navigateToSelectedProperty: LiveData<Hit>
         get() = _navigateToSelectedProperty
 
-    private val repository = ImageRepository()
+    private var currentQueryValue: String? = null
+    private var currentSearchResult: Flow<PagingData<Hit>>? = null
 
-    val properties: LiveData<HitsData> = repository.properties
-    val items: LiveData<List<Item>> = getItems(10)
+    private val repository = ImageRepository(HitApiService.create())
 
+
+   private var _properties =  MutableLiveData<List<Hit>>()
+   val properties: LiveData<List<Hit>>
+    get() = _properties
+
+   init {
+        viewModelScope.launch {
+            @OptIn(ExperimentalCoroutinesApi::class)
+            currentSearchResult?.collectLatest { pagingData ->
+                pagingData.mapSync {
+                   _properties.value = listOf(it)
+               }
+            }
+        }
+    }
 
     fun displayPropertyDetail(hitProperty: Hit) {
         _navigateToSelectedProperty.value = hitProperty
@@ -31,43 +52,15 @@ class GalleryViewModel : ViewModel() {
         _navigateToSelectedProperty.value = null
     }
 
-    fun updateSearch(query: String, page: Int) {
-        viewModelScope.launch {
-            repository.getHitsProperties(query, page)
+     fun updateSearch(query: String): Flow<PagingData<Hit>> {
+        val lastResult = currentSearchResult
+        if (query == currentQueryValue && lastResult != null) {
+            return lastResult
         }
-    }
-
-    private fun getItems(columns: Int): LiveData<List<Item>> {
-        return Transformations.map(properties) { data ->
-            val list = ArrayList<Item>()
-            val row = ArrayList<Item>()
-            var rowRatios = 0f
-            data.hits.forEach {
-                val imageRatio = it.imageWidth / it.imageHeight.toFloat()
-                val item = Item(
-                    it.imageId,
-                    imageRatio,
-                    it.previewURL,
-                    it.largeImageURL,
-                    it
-                )
-                list.add(item)
-                rowRatios += item.imageRatio
-                if (rowRatios > 2f) {
-                    var used = 0
-                    row.forEach { it2: Item ->
-                        it2.columns = ((columns * it2.imageRatio) / rowRatios).toInt()
-                        used += it2.columns
-                    }
-                    item.columns = columns - used
-                    row.clear()
-                    rowRatios = 0f
-                } else {
-                    row.add(item)
-                }
-            }
-            list
-        }
+        currentQueryValue = query
+        val newResult = repository.getHitsProperties(query).cachedIn(viewModelScope)
+        currentSearchResult = newResult
+        return newResult
     }
 
 
