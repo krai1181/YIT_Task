@@ -68,7 +68,8 @@ class GalleryFragment : Fragment() {
 
     private fun sendDataToDetailFragment() {
         viewModel.properties.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
+            val list = it
+            if (list != null) {
                 setFragmentResult(REQUEST_KEY, bundleOf(BUNDLE_KEY to it))
             }
         })
@@ -105,8 +106,8 @@ class GalleryFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        adapter = ImagesAdapter(ImagesAdapter.OnClickListener {
-            viewModel.displayPropertyDetail(it)
+        adapter = ImagesAdapter(ImagesAdapter.OnClickListener {hit, hitlits ->
+            viewModel.displayPropertyDetail(hit, hitlits)
         })
         binding.rvImages.adapter = adapter
 

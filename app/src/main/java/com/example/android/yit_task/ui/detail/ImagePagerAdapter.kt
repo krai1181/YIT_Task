@@ -3,11 +3,10 @@ package com.example.android.yit_task.ui.detail
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.android.yit_task.network.Hit
+import com.example.android.yit_task.model.Hit
+
 
 class ImagePagerAdapter : ListAdapter<Hit,DetailViewHolder>(DiffCallback) {
-
-    private var images = emptyList<Hit>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         return DetailViewHolder.create(parent)

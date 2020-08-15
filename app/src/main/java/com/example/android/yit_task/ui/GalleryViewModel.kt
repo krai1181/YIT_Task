@@ -9,11 +9,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.android.yit_task.model.Hit
 import com.example.android.yit_task.network.HitApiService
+import com.example.android.yit_task.network.HitsData
 import com.example.android.yit_task.repository.ImageRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 class GalleryViewModel : ViewModel() {
@@ -28,24 +26,15 @@ class GalleryViewModel : ViewModel() {
 
     private val repository = ImageRepository(HitApiService.create())
 
+    private var _properties = MutableLiveData<HitsData>()
+    val properties: LiveData<HitsData>
+        get() = _properties
 
-   private var _properties =  MutableLiveData<List<Hit>>()
-   val properties: LiveData<List<Hit>>
-    get() = _properties
 
-   init {
-        viewModelScope.launch {
-            @OptIn(ExperimentalCoroutinesApi::class)
-            currentSearchResult?.collectLatest { pagingData ->
-                pagingData.mapSync {
-                   _properties.value = listOf(it)
-               }
-            }
-        }
-    }
-
-    fun displayPropertyDetail(hitProperty: Hit) {
+    fun displayPropertyDetail(hitProperty: Hit, hitList:List<Hit>) {
         _navigateToSelectedProperty.value = hitProperty
+        val hits = HitsData(hitList)
+        _properties.value = hits
     }
 
     fun completeDisplayingProperty() {

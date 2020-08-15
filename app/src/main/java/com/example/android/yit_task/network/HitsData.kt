@@ -8,10 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class HitsData(
-    @SerializedName(value = "total") val total:Int = 0,
-    @SerializedName(value = "totalHits") val totalHits: Int = 0,
-    @SerializedName(value =  "hits") val hits: List<Hit> = emptyList(),
-    val nextPage: Int? = null
+    @SerializedName(value =  "hits") val hits: List<Hit> = emptyList()
 ):Parcelable
 
 

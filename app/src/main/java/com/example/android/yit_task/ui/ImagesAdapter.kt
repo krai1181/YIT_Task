@@ -18,8 +18,17 @@ class ImagesAdapter(private val clickListener: OnClickListener) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val hitProperty = getItem(position)
         if (hitProperty != null) {
+
+            val hitsList = mutableListOf<Hit>()
+            for (i in 0 until itemCount) {
+                val temp = getItem(i)
+                if (temp != null) {
+                    hitsList.run { add(i, temp) }
+                }
+            }
+
             holder.itemView.setOnClickListener {
-                clickListener.onClick(hitProperty)
+                clickListener.onClick(hitProperty, hitsList.toList())
             }
 
             (holder as HitsPropertyViewHolder).bind(hitProperty)
@@ -27,8 +36,8 @@ class ImagesAdapter(private val clickListener: OnClickListener) :
 
     }
 
-    class OnClickListener(val clickListener: (hitProperty: Hit) -> Unit) {
-        fun onClick(hitProperty: Hit) = clickListener(hitProperty)
+    class OnClickListener(val clickListener: (hitProperty: Hit, hitsList: List<Hit>) -> Unit) {
+        fun onClick(hitProperty: Hit, hitsList: List<Hit>) = clickListener(hitProperty, hitsList)
     }
 
 
