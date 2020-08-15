@@ -7,7 +7,7 @@
 
         <variable
             name="property"
-            type="com.example.android.yit_task.model.Item" />
+            type="com.example.android.yit_task.model.Hit" />
 
     </data>
 

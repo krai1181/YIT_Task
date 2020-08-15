@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.yit_task.network.Hit
+import com.example.android.yit_task.model.Hit
 
 class DetailViewModel(property: Hit, app: Application) : AndroidViewModel(app) {
 

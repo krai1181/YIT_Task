@@ -11,10 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.ExperimentalPagingApi
 import com.example.android.yit_task.databinding.GalleryFragmentBinding
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -23,9 +28,12 @@ const val REQUEST_KEY = "requestKey"
 
 class GalleryFragment : Fragment() {
 
+    private var searchJob: Job? = null
     private lateinit var viewModel: GalleryViewModel
     private lateinit var binding: GalleryFragmentBinding
     private lateinit var preferences: SharedPreferences
+    private lateinit var adapter: ImagesAdapter
+
     private val sharedPrefFile = "com.example.android.yit_task.ui"
     private val appPrefSearch = "search"
     private val appPrefPage = "page"
@@ -46,24 +54,28 @@ class GalleryFragment : Fragment() {
         preferences = requireActivity().getSharedPreferences(sharedPrefFile, MODE_PRIVATE)
 
 
+        initAdapter()
 
-        binding.rvImages.adapter = ImagesAdapter(ImagesAdapter.OnClickListener {
-            viewModel.displayPropertyDetail(it.hit)
-        })
-
-        val layoutManager = GridLayoutManager(context, 10)
-        layoutManager.spanSizeLookup  = (binding.rvImages.adapter as ImagesAdapter).spanSizeLookup
-        binding.rvImages.layoutManager = layoutManager
+        sendDataToDetailFragment()
 
 
+        navigateToDetailScreen()
 
+        updateItemListFromInput()
+
+        return binding.root
+    }
+
+    private fun sendDataToDetailFragment() {
         viewModel.properties.observe(viewLifecycleOwner, Observer {
-            if (it!= null){
+            val list = it
+            if (list != null) {
                 setFragmentResult(REQUEST_KEY, bundleOf(BUNDLE_KEY to it))
             }
         })
+    }
 
-
+    private fun navigateToDetailScreen() {
         viewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 this.findNavController()
@@ -71,35 +83,42 @@ class GalleryFragment : Fragment() {
                 viewModel.completeDisplayingProperty()
             }
         })
+    }
 
+    private fun updateItemListFromInput() {
         binding.btnSearch.setOnClickListener {
             val q = binding.editTv.text.toString().toLowerCase(Locale.getDefault())
-            currentPage = 1
-            viewModel.updateSearch(q, currentPage)
+            binding.rvImages.scrollToPosition(0)
+            search(q)
             lastSearch = q
         }
+    }
 
-        binding.rvImages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
 
-                if (recyclerView.canScrollVertically(1).not()) {
-                    if (currentPage in 1..2) {
-                        currentPage++
-                        viewModel.updateSearch(lastSearch, currentPage)
-                    }
-                }
+    private fun search(query: String) {
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            @OptIn(ExperimentalCoroutinesApi::class)
+            viewModel.updateSearch(query).collectLatest { pagingData ->
+                adapter.submitData(pagingData)
             }
-        })
+        }
+    }
 
-        return binding.root
+    private fun initAdapter() {
+        adapter = ImagesAdapter(ImagesAdapter.OnClickListener {hit, hitlits ->
+            viewModel.displayPropertyDetail(hit, hitlits)
+        })
+        binding.rvImages.adapter = adapter
+
+
     }
 
     override fun onPause() {
         super.onPause()
         val editor = preferences.edit()
         editor.putString(appPrefSearch, lastSearch)
-        editor.putInt(appPrefPage,currentPage)
+        editor.putInt(appPrefPage, currentPage)
         editor.apply()
     }
 
@@ -107,8 +126,14 @@ class GalleryFragment : Fragment() {
         super.onResume()
         if (preferences.contains(appPrefSearch)) {
             lastSearch = preferences.getString(appPrefSearch, baseQ).toString()
-            currentPage = preferences.getInt(appPrefPage,1)
-            viewModel.updateSearch(lastSearch, currentPage)
+            currentPage = preferences.getInt(appPrefPage, 1)
+            search(lastSearch)
+            lifecycleScope.launch {
+                @OptIn(ExperimentalPagingApi::class)
+                adapter.dataRefreshFlow.collect {
+                    binding.rvImages.scrollToPosition(0)
+                }
+            }
         }
     }
 

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.yit_task.databinding.SliderImageItemBinding
-import com.example.android.yit_task.network.Hit
+import com.example.android.yit_task.model.Hit
 
 class DetailViewHolder(private var binding: SliderImageItemBinding) :
     RecyclerView.ViewHolder(binding.root) {

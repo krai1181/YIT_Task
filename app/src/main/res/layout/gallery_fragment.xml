@@ -51,14 +51,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/half_margin"
-            android:clipToPadding="false"
-            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_tv"
-            tools:spanCount="4"
-            listData="@{viewModel.items}"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
             tools:listitem="@layout/image_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

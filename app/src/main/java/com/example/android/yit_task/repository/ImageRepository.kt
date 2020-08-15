@@ -1,28 +1,28 @@
 package com.example.android.yit_task.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.android.yit_task.network.HitApi
-import com.example.android.yit_task.network.HitsData
-import com.example.android.yit_task.ui.TAG
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.example.android.yit_task.data.ItemPagingSource
+import com.example.android.yit_task.model.Hit
+import com.example.android.yit_task.network.HitApiService
+import kotlinx.coroutines.flow.Flow
 
-class ImageRepository {
+class ImageRepository(private val service: HitApiService) {
 
-    private val _properties = MutableLiveData<HitsData>()
-    val properties: LiveData<HitsData>
-        get() = _properties
+    fun getHitsProperties(q:String): Flow<PagingData<Hit>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {ItemPagingSource(service,q)}
+        ).flow
+    }
 
 
-    suspend fun getHitsProperties(q:String, currentPage:Int ) {
-        val getPropertiesDeferred = HitApi.retrofitService.getPropertiesAsync(q, currentPage)
-        val hitsData = getPropertiesDeferred.await()
-        try {
-            _properties.value = hitsData
-            Log.d(TAG, hitsData.hits[0].user_id.toString())
-        } catch (t: Throwable) {
-            Log.d(TAG, "Failure ${t.message}")
-        }
+    companion object {
+        private const val NETWORK_PAGE_SIZE = 200
     }
 
 }
